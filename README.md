@@ -1,5 +1,5 @@
 # MedE2Vec
-MedE2Vec is a embedding translation tool for medical entities based on attention mechanism. We have provided a version of tensorflow implement and it is constantly being provided.
+MedE2Vec is a embedding translation tool for medical entities based on attention mechanism. We have provided a version of tensorflow implement and it is constantly being improved.
 
 # Prerequisites
 1.	We use Python 3.6 and Tensorflow 1.8.0. 
