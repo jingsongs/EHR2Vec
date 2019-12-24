@@ -18,6 +18,7 @@ MedE2Vec is a embedding translation tool for medical entities based on attention
 
 ## Example of how to run MedE2vec with the provide train_data_example.pkl and dict_types.pkl
 1、	Count the total number input entities(n_input) and the max length(max_seq_length) of all events.
+
                           python3 statistic.py
        
 2、	Put the (n_input+1) and max_seq_length parameter into the get_config() function.
@@ -27,6 +28,7 @@ MedE2Vec is a embedding translation tool for medical entities based on attention
 4、	The default data_path and dict_types_path of this example were configured and you can set it for yourself.
 
 5、	Run the MedE2vec model and get the entity embedding:
+
                         python3 SLE_MedE2Vec_Runner.py
        
 6、The vectors result can be found in the model path.
