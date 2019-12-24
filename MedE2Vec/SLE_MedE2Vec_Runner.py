@@ -18,9 +18,10 @@ def get_config():
     config['dropout_rate']=0.1
     config['max_epoch'] = 10
     config['batch_size'] = 8
-    config['display_step'] = 1
-    config['data_path']='./train_data.pkl'
-    config['save_model_path']='./MedE_sle_20epoch_512_10468_admission/'
+    config['display_step'] =1
+    config['data_path'] = './example/train_data_example.pkl'
+    config['save_model_path'] = './example/MedE/'
+    config['dict_types_path']='./example/dict_types.pkl'
     return config
 
 def load_data(x_file):
@@ -105,12 +106,11 @@ def model_train(model, saver, config):
         if epoch == config['max_epoch'] - 1:
             saver.save(sess=model.sess, save_path=path,global_step=config['max_epoch'])
 
-def get_code_representation(model, saver,dirpath):
+def get_code_representation(model, saver,dirpath,dict_types_file):
     ckpt = tf.train.get_checkpoint_state(dirpath)
     if ckpt and ckpt.model_checkpoint_path:
         saver.restore(model.sess, ckpt.model_checkpoint_path)
         embeddings = model.get_weights_embeddings()
-        dict_types_file='./vocabulary/dict_types.pkl'
         types = pickle.load(open(dict_types_file, 'rb'))
         types = OrderedDict(sorted(types.items(),key=lambda x:x[1]))
         out_put_file = dirpath+'/vectors.pkl'
@@ -122,12 +122,11 @@ def get_code_representation(model, saver,dirpath):
         file.close()
     else:
         print('ERROR')
-def interpret_code_representation(model, saver,dirpath):
+def interpret_code_representation(model, saver,dirpath,dict_types_file):
     ckpt = tf.train.get_checkpoint_state(dirpath)
     if ckpt and ckpt.model_checkpoint_path:
         saver.restore(model.sess, ckpt.model_checkpoint_path)
         w_emb= model.get_weights_embeddings()
-        dict_types_file = './vocabulary/dict_types.pkl'
         code_dict = pickle.load(open(dict_types_file, 'rb'))
         dict={}
         for k,v in code_dict.items():
@@ -152,8 +151,8 @@ def main(_):
                         num_heads=config['num_heads'],dropout_rate=config['dropout_rate'])
     saver = tf.train.Saver()
     model_train(model, saver, config)
-    # interpret_code_representation(model, saver,config['save_model_path'])
-    # get_code_representation(model,saver,config['save_model_path'])
+    # interpret_code_representation(model, saver,config['save_model_path'],config['dict_types_path'])
+    get_code_representation(model,saver,config['save_model_path'],config['dict_types_path'])
 
 if __name__ == "__main__":
     tf.app.run()
