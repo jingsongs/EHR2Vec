@@ -13,7 +13,6 @@ def ln(inputs, epsilon=1e-8, scope="ln"):
     with tf.variable_scope(scope, reuse=tf.AUTO_REUSE):
         inputs_shape = inputs.get_shape()
         params_shape = inputs_shape[-1:]
-
         mean, variance = tf.nn.moments(inputs, [-1], keep_dims=True)
         beta = tf.get_variable("beta", params_shape, initializer=tf.zeros_initializer())
         gamma = tf.get_variable("gamma", params_shape, initializer=tf.ones_initializer())
@@ -112,8 +111,7 @@ class MedE2Vec(object):
         self.idx = tf.placeholder(tf.int32, shape=[None, self.maxseq_len])
         self.vi = tf.placeholder(tf.int32)
         self.vj = tf.placeholder(tf.int32)
-        self.v = self.encode(self.idx, self.embeddings,self.d_ff,self.num_blocks,
-                             self.num_heads,self.dropout_rate) * 0.1
+        self.v = self.encode(self.idx, self.embeddings) * 0.1
         self.emb_cost = self._initialize_entity_cost()
         self.vivlcost = self._initialize_visit_cost()
         self.cost = self.emb_cost + self.vivlcost
@@ -122,19 +120,19 @@ class MedE2Vec(object):
         self.sess = tf.Session()
         self.sess.run(init)
 
-    def encode(self, xs,embeddings,d_model,d_ff,num_blocks,num_heads,dropout_rate,training=True):
+    def encode(self, xs,embeddings,training=True):
         with tf.variable_scope("encoder", reuse=tf.AUTO_REUSE):
             enc = tf.nn.embedding_lookup(embeddings, xs)
-            enc *= d_model**0.5
-            for i in range(num_blocks):
+            enc *= self.d_model**0.5
+            for i in range(self.num_blocks):
                 with tf.variable_scope("num_blocks_{}".format(i), reuse=tf.AUTO_REUSE):
                     enc = multihead_attention(queries=enc,
                                               keys=enc,
                                               values=enc,
-                                              num_heads=num_heads,
-                                              dropout_rate=dropout_rate,
+                                              num_heads=self.num_heads,
+                                              dropout_rate=self.dropout_rate,
                                               training=training)
-                    enc = ff(enc, num_units=[d_ff, d_model])
+                    enc = ff(enc, num_units=[self.d_ff, self.d_model])
         return enc
 
     def _initialize_entity_cost(self):
