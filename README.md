@@ -16,7 +16,7 @@ MedE2Vec is an embedding translation tool for medical entities based on attentio
 3.	Running:
 You can train the model with the default hyper-parameters except the training data path,n_input,maxlen_seqs, dict_types_path,save_model_path and embedding save path. And you can use the simple execution command  to run the model: 
 
-    python3 SLE_MedE2Vec_Runner.py --data_path  <<your train data path>>  --n_input <the entity number of your data>  --maxlen_seqs  <the max event length of your data>  --dict_types_path <your vocabulary path> --entity_embedding_path  <save embedding path>  --save_model_path  <save your model path>
+    python3 SLE_MedE2Vec_Runner.py --data_path  \<your train data path\>  --n_input <the entity number of your data>  --maxlen_seqs  <the max event length of your data>  --dict_types_path <your vocabulary path> --entity_embedding_path  <save embedding path>  --save_model_path  <save your model path>
 
 ## Example of how to run MedE2Vec with the provide train_data_example.pkl and dict_types.pkl
 
