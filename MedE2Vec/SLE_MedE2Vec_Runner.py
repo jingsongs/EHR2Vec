@@ -6,23 +6,8 @@ import pickle
 import os
 from collections import OrderedDict
 from MedE2Vec_modules import MedE2Vec
+from hparams import Hparams
 
-def get_config():
-    config = dict()
-    config['n_input'] = 10468
-    config['maxlen_seqs'] = 104
-    config['d_model'] = 512
-    config['d_ff'] = 2048
-    config['num_blocks'] = 1
-    config['num_heads'] = 8
-    config['dropout_rate']=0.1
-    config['max_epoch'] = 10
-    config['batch_size'] = 8
-    config['display_step'] =1
-    config['data_path'] = './example/train_data_example.pkl'
-    config['save_model_path'] = './example/MedE/'
-    config['dict_types_path']='./example/dict_types.pkl'
-    return config
 
 def load_data(x_file):
     x_seq = np.array(pickle.load(open(x_file, 'rb')))
@@ -65,12 +50,11 @@ def pickTwo_vi(Vts,vi,vj):
                     if num1_v2>num1_v1:
                             break
 
-def pad_matrix(seqs, config):
+def pad_matrix(seqs, maxlen_seqs):
     i_vec = []
     j_vec = []
     vi_vec=[]
     vj_vec=[]
-    maxlen_seqs=config['maxlen_seqs']
     pickTwo_vi(seqs.tolist(),vi_vec,vj_vec)
     sents=[]
     for idx,seq_id in enumerate(seqs):
@@ -84,37 +68,36 @@ def pad_matrix(seqs, config):
         X[i]=np.lib.pad(x,[0,maxlen_seqs-len(x)],'constant',constant_values=(0,0))
     return X, i_vec, j_vec,vi_vec,vj_vec
 
-def model_train(model, saver, config):
-    for epoch in range(config['max_epoch']):
+def model_train(model, saver, hp):
+    for epoch in range(hp.max_epoch):
         print('epoch %d'%epoch)
         avg_cost = 0.
-        x_seq= load_data(config['data_path'])
-        total_batch = int(np.ceil(len(x_seq) / config['batch_size']))
+        x_seq= load_data(hp.data_path)
+        total_batch = int(np.ceil(len(x_seq) / hp.batch_size))
         for index in range(total_batch):
-            x_batch = x_seq[index * config['batch_size']: (index + 1) * config['batch_size']]
-            x, i_vec, j_vec,vi_vec,vj_vec= pad_matrix(x_batch, config)
+            x_batch = x_seq[index * hp.batch_size: (index + 1) * hp.batch_size]
+            x, i_vec, j_vec,vi_vec,vj_vec= pad_matrix(x_batch, hp.maxlen_seqs)
             cost=model.partial_fit(x=x,i_vec=i_vec, j_vec=j_vec,vi=vi_vec,vj=vj_vec)
-            avg_cost += cost / len(x_seq) * config['batch_size']
-        if epoch % config['display_step'] == 0:
+            avg_cost += cost / len(x_seq) * hp.batch_size
+        if epoch % hp.display_step == 0:
             print("Epoch:", '%04d' % (epoch + 1), "cost=", "{:.9f}".format(avg_cost))
-        save_path=config['save_model_path']
+        save_path=hp.save_model_path
         if os.path.exists(save_path):
             path=os.path.join(save_path,'MedE')
         else:
             os.makedirs(save_path)
             path=os.path.join(save_path,'MedE')
-        if epoch == config['max_epoch'] - 1:
-            saver.save(sess=model.sess, save_path=path,global_step=config['max_epoch'])
+        if epoch == hp.max_epoch - 1:
+            saver.save(sess=model.sess, save_path=path,global_step=hp.max_epoch)
 
-def get_code_representation(model, saver,dirpath,dict_types_file):
+def get_code_representation(model, saver,dirpath,dict_types_file,entity_embedding_path):
     ckpt = tf.train.get_checkpoint_state(dirpath)
     if ckpt and ckpt.model_checkpoint_path:
         saver.restore(model.sess, ckpt.model_checkpoint_path)
         embeddings = model.get_weights_embeddings()
         types = pickle.load(open(dict_types_file, 'rb'))
         types = OrderedDict(sorted(types.items(),key=lambda x:x[1]))
-        out_put_file = dirpath+'/vectors.pkl'
-        file = open(out_put_file, 'wb')
+        file = open(entity_embedding_path, 'wb')
         dict = {}
         for w, (k, v) in zip(embeddings, types.items()):
             dict[k] = w
@@ -122,37 +105,20 @@ def get_code_representation(model, saver,dirpath,dict_types_file):
         file.close()
     else:
         print('ERROR')
-def interpret_code_representation(model, saver,dirpath,dict_types_file):
-    ckpt = tf.train.get_checkpoint_state(dirpath)
-    if ckpt and ckpt.model_checkpoint_path:
-        saver.restore(model.sess, ckpt.model_checkpoint_path)
-        w_emb= model.get_weights_embeddings()
-        code_dict = pickle.load(open(dict_types_file, 'rb'))
-        dict={}
-        for k,v in code_dict.items():
-            dict[v]=k
-        out_put_file ='/MedE_dimensions.txt'
-        file = open(out_put_file, 'w')
-        np.random.seed(0)
-        for i in np.random.randint(0, 512, size=4):
-            file.write('dimension'+str(i)+'\n')
-            sorted_code = np.argsort(w_emb[:, i])[get_config()['n_input'] - 10:get_config()['n_input']]
-            for j in sorted_code:
-                try:
-                    file.write(str(j)+dict[j]+'\n')
-                except KeyError as error:
-                    print('error-------', j, dict[j])
-        file.close()
+
 
 def main(_):
-    config = get_config()
-    model = MedE2Vec(n_input=config['n_input'], d_model=config['d_model'],batch_size=config['batch_size'],
-                      maxseq_len=config['maxlen_seqs'],d_ff=config['d_ff'],num_blocks=config['num_blocks'],
-                        num_heads=config['num_heads'],dropout_rate=config['dropout_rate'])
+    hparams = Hparams()
+    parser = hparams.parser
+    hp = parser.parse_args()
+
+    model = MedE2Vec(n_input=hp.n_input, d_model=hp.d_model,batch_size=hp.batch_size,
+                      maxseq_len=hp.maxlen_seqs,d_ff=hp.d_ff,num_blocks=hp.num_blocks,
+                        num_heads=hp.num_heads,dropout_rate=hp.dropout_rate)
     saver = tf.train.Saver()
-    model_train(model, saver, config)
-    # interpret_code_representation(model, saver,config['save_model_path'],config['dict_types_path'])
-    get_code_representation(model,saver,config['save_model_path'],config['dict_types_path'])
+    model_train(model, saver, hp)
+    get_code_representation(model,saver,hp.save_model_path,hp.dict_types_path,hp.entity_embedding_path)
 
 if __name__ == "__main__":
     tf.app.run()
+
