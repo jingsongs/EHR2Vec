@@ -1,9 +1,6 @@
 #encoding:utf8
 #@File:statistic.py
 
-#encoding:utf8
-#@File:statistic.py
-
 import pickle
 import argparse
 
