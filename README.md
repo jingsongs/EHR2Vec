@@ -20,7 +20,7 @@ You can train the model with the default hyper-parameters except the training da
 
 The complete execution command includes all the hyper-parameters：
 
-     python3 SLE_MedE2Vec_Runner.py --data_path \<your train data path\>  --n_input \<the entity number of your data\>  --maxlen_seqs  \<the max event length of your data\>  --d_model  \<dimension of entity embedding\> --d_ff  \<number of neurons of feedword network\> --num_blocks \<number of blocks\> -- num_heads  \<head number of the multi-head attenion\>  --dropout_rate \< dropout rate\> --dict_types_path \<your vocabulary path\>  --entity_embedding_path  \<save embedding path\>  --save_model_path  \<save your model path\>  --max_epoch \<number of epoch\>  --batch_size \<batch size\> --display_step \<display frequency of the training process\>
+     python3 SLE_MedE2Vec_Runner.py --data_path <your train data path>  --n_input <the entity number of your data>  --maxlen_seqs  \<the max event length of your data\>  --d_model  \<dimension of entity embedding\> --d_ff  \<number of neurons of feedword network\> --num_blocks \<number of blocks\> -- num_heads  \<head number of the multi-head attenion\>  --dropout_rate \< dropout rate\> --dict_types_path \<your vocabulary path\>  --entity_embedding_path  \<save embedding path\>  --save_model_path  \<save your model path\>  --max_epoch \<number of epoch\>  --batch_size \<batch size\> --display_step \<display frequency of the training process\>
 
 
 ## Example of how to run MedE2Vec with the provide train_data_example.pkl and dict_types.pkl
