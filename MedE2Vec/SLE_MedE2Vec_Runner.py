@@ -60,8 +60,8 @@ def pad_matrix(seqs, maxlen_seqs):
     for idx,seq_id in enumerate(seqs):
         if not seq_id[0] == -1:
             seq_id_array=np.array(seq_id)
-            seq_id_array_1=(seq_id_array+np.ones_like(seq_id_array))
-            sents.append(seq_id_array_1)
+            #seq_id_array_1=(seq_id_array+np.ones_like(seq_id_array))
+            sents.append(seq_id_array)
             pickTwo(i_vec, j_vec,maxlen_seqs)
     X=np.zeros([len(sents),maxlen_seqs],np.int32)
     for i,x in enumerate(sents):
