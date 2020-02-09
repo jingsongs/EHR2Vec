@@ -1,9 +1,9 @@
-# MedE2Vec
-MedE2Vec is an embedding translation tool for medical entities based on attention mechanism. We have provided a version of tensorflow implement and it is constantly being improved.
+# EHR2Vec
+EHR2Vec is an embedding translation tool for medical entities based on attention mechanism. We have provided a version of tensorflow implement and it is constantly being improved.
 
 # Prerequisites
 1.	We use Python 3.6 and Tensorflow 1.8.0. 
-2.	Download/clone the MedE2Vec code
+2.	Download/clone the EHR2Vec code
 
 
 # Running
@@ -16,14 +16,14 @@ MedE2Vec is an embedding translation tool for medical entities based on attentio
 3.	Running:
 You can train the model with the default hyper-parameters except the training data path, n_input, maxlen_seqs, dict_types_path, save_model_path and embedding save path. And you can use the simple execution command to run the model: 
 
-     python3 SLE_MedE2Vec_Runner.py --data_path  \<your train data path\>  --n_input \<the entity number of your data\>  --maxlen_seqs  \<the max event length of your data\>  --dict_types_path \<your vocabulary path\> --entity_embedding_path  \<save embedding path\>  --save_model_path  \<save your model path\>
+     python3 SLE_EHR2Vec_Runner.py --data_path  \<your train data path\>  --n_input \<the entity number of your data\>  --maxlen_seqs  \<the max event length of your data\>  --dict_types_path \<your vocabulary path\> --entity_embedding_path  \<save embedding path\>  --save_model_path  \<save your model path\>
 
 The complete execution command includes all the hyper-parameters：
 
-     python3 SLE_MedE2Vec_Runner.py --data_path <your train data path>  --n_input <the entity number of your data>  --maxlen_seqs  <the max event length of your data>  --d_model  <dimension of entity embedding> --d_ff  <number of neurons of feedword network> --num_blocks <number of blocks> -- num_heads  <head number of the multi-head attenion>  --dropout_rate < dropout rate> --dict_types_path <your vocabulary path>  --entity_embedding_path  <save embedding path>  --save_model_path  <save your model path>  --max_epoch <number of epoch>  --batch_size <batch size> --display_step <display frequency of the training process>
+     python3 SLE_EHR2Vec_Runner.py --data_path <your train data path>  --n_input <the entity number of your data>  --maxlen_seqs  <the max event length of your data>  --d_model  <dimension of entity embedding> --d_ff  <number of neurons of feedword network> --num_blocks <number of blocks> -- num_heads  <head number of the multi-head attenion>  --dropout_rate < dropout rate> --dict_types_path <your vocabulary path>  --entity_embedding_path  <save embedding path>  --save_model_path  <save your model path>  --max_epoch <number of epoch>  --batch_size <batch size> --display_step <display frequency of the training process>
 
 
-## Example of how to run MedE2Vec with the provide train_data_example.pkl and dict_types.pkl
+## Example of how to run EHR2Vec with the provide train_data_example.pkl and dict_types.pkl
 
 1、	Count the total number of input entities(n_input) and the max length(max_seq_length) of all events with the command.
 
@@ -31,9 +31,9 @@ The complete execution command includes all the hyper-parameters：
     
     You will get the n_input number and max_seq_length number from the output.
 
-2、	Run the MedE2Vec model and get the entity embedding:
+2、	Run the EHR2Vec model and get the entity embedding:
 
-    python3 SLE_MedE2Vec_Runner.py --n_input 17 --maxlen_seqs 7 --data_path ./example/train_data_example.pkl --dict_types_path ./example/dict_types.pkl --save_model_path ./example/MedE/ --entity_embedding_path ./example/entity_embedding.pkl
+    python3 SLE_EHR2Vec_Runner.py --n_input 17 --maxlen_seqs 7 --data_path ./example/train_data_example.pkl --dict_types_path ./example/dict_types.pkl --save_model_path ./example/MedE/ --entity_embedding_path ./example/entity_embedding.pkl
 
 3、The vectors result can be found in the entity_embedding_path.
 
