@@ -137,9 +137,6 @@ class MedE2Vec(object):
 
     def _initialize_entity_cost(self):
         norms = tf.reduce_sum(tf.exp(tf.matmul(self.v, tf.transpose(self.v, [0, 2, 1]))), axis=2)
-        #分母使用全局embedding计算， log_sum 会出现nan值， 原因：优化的时候，exp = tf.exp(tf.reduce_sum(wi_emb * wj_emb, axis=2))
-        # e的幂指函数过大 比如（e的2*10的36次方） 计算出现inf
-        #norms = tf.reduce_sum(tf.exp(tf.matmul(self.embeddings, tf.transpose(self.embeddings, [1, 0]))), axis=1)
         wi_emb = tf.gather(self.v, self.i_vec, axis=1)
         wj_emb = tf.gather(self.v, self.j_vec, axis=1)
         exp = tf.exp(tf.reduce_sum(wi_emb * wj_emb, axis=2))
@@ -149,14 +146,11 @@ class MedE2Vec(object):
         return  log_sum
 
     def _initialize_visit_cost(self):
-        #分母、分子为一个batch的数据
-        # self.v：batch_size*104*512-------batch_size*104
         batch_v = tf.squeeze(tf.layers.dense(self.v, 1),axis=-1)*0.1
         norms = tf.reduce_sum(tf.exp(tf.matmul(batch_v, tf.transpose(batch_v, [1, 0]))), axis=1)
         wi_emb = tf.gather_nd(batch_v, self.vi)
         wj_emb = tf.gather_nd(batch_v, self.vj)
         exp = tf.exp(tf.reduce_sum(wi_emb * wj_emb, axis=1))
-        # norms2 = tf.gather(norms, self.vj, axis=0)
         norms2 = tf.gather_nd(norms, self.vj)
         log_sum = tf.reduce_sum(-tf.log(exp / norms2+self.log_eps))
         return log_sum
