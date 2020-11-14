@@ -21,7 +21,7 @@ class Hparams:
     #path
     parser.add_argument('--data_path', default='./example/train_data_example.pkl', help='path of the train data')
     parser.add_argument('--dict_types_path', default='./example/dict_types.pkl', help='path of the dict_types')
-    parser.add_argument('--save_model_path', default='./example/MedE/', help='save model path')
+    parser.add_argument('--save_model_path', default='./example/EHR2vec_model/', help='save model path')
     parser.add_argument('--entity_embedding_path', default='./example/entity_embedding.pkl', help='save entity_embedding path')
 
 
