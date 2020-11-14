@@ -83,10 +83,10 @@ def model_train(model, saver, hp):
             print("Epoch:", '%04d' % (epoch + 1), "cost=", "{:.9f}".format(avg_cost))
         save_path=hp.save_model_path
         if os.path.exists(save_path):
-            path=os.path.join(save_path,'MedE')
+            path=os.path.join(save_path,'EHR2Vec')
         else:
             os.makedirs(save_path)
-            path=os.path.join(save_path,'MedE')
+            path=os.path.join(save_path,'EHR2Vec')
         if epoch == hp.max_epoch - 1:
             saver.save(sess=model.sess, save_path=path,global_step=hp.max_epoch)
 
