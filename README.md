@@ -33,7 +33,7 @@ The complete execution command includes all the hyper-parameters：
 
 2、	Run the EHR2Vec model and get the entity embedding:
 
-    python3 SLE_EHR2Vec_Runner.py --n_input 17 --maxlen_seqs 7 --data_path ./example/train_data_example.pkl --dict_types_path ./example/dict_types.pkl --save_model_path ./example/MedE/ --entity_embedding_path ./example/entity_embedding.pkl
+    python3 SLE_EHR2Vec_Runner.py --n_input 17 --maxlen_seqs 7 --data_path ./example/train_data_example.pkl --dict_types_path ./example/dict_types.pkl --save_model_path ./example/EHR2Vec_model/ --entity_embedding_path ./example/entity_embedding.pkl
 
 3、The vectors result can be found in the entity_embedding_path.
 
