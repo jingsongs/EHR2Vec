@@ -5,7 +5,7 @@ import numpy as np
 import pickle
 import os
 from collections import OrderedDict
-from MedE2Vec_modules import MedE2Vec
+from EHR2Vec_modules import EHR2Vec
 from hparams import Hparams
 
 
@@ -112,7 +112,7 @@ def main(_):
     parser = hparams.parser
     hp = parser.parse_args()
 
-    model = MedE2Vec(n_input=hp.n_input, d_model=hp.d_model,batch_size=hp.batch_size,
+    model = EHR2Vec(n_input=hp.n_input, d_model=hp.d_model,batch_size=hp.batch_size,
                       maxseq_len=hp.maxlen_seqs,d_ff=hp.d_ff,num_blocks=hp.num_blocks,
                         num_heads=hp.num_heads,dropout_rate=hp.dropout_rate)
     saver = tf.train.Saver()
