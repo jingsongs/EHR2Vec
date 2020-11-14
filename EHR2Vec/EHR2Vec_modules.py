@@ -89,7 +89,7 @@ def ff(inputs, num_units, scope="positionwise_feedforward"):
         outputs = ln(outputs)
     return outputs
 
-class MedE2Vec(object):
+class EHR2Vec(object):
     def __init__(self, n_input, d_model, batch_size, maxseq_len,d_ff,num_blocks,num_heads,dropout_rate,log_eps=1e-8,
                  optimizer=tf.train.AdadeltaOptimizer(learning_rate=0.5), init_scale=0.01):
         self.n_input = n_input
